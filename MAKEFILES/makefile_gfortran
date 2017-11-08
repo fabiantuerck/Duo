@@ -10,11 +10,11 @@ PLAT = _0506
 
 FOR  = gfortran
 
-FFLAGS = -W -Wall -fbounds-check -pedantic-errors -std=f2003 -Wunderflow -O -fbacktrace -ffpe-trap=zero,overflow,underflow -g  #Debug options for gfortran
+FFLAGS = -W -Wall -fbounds-check -std=f2003 -Wunderflow -O -fbacktrace -ffpe-trap=zero,overflow,underflow -g -ffixed-line-length-none  #Debug options for gfortran
 #FFLAGS = -std=f2003 -O2 -march=native #Production options for gfortran
-FFLAGS =  -fbounds-check -std=f2003  -O0
+FFLAGS =  -ffixed-line-length-none -fbounds-check -std=f2003  -O3
 
-LAPACK = -llapack -lblas -L./
+LAPACK = -llapack -L/usr/lib/lapack -lblas -L/usr/lib/libblas
 
 LIB     =   $(LAPACK)
 
