@@ -418,8 +418,7 @@ contains
               !
               write(char_LF,'(i12)') iLF
               !
-              filename =  "matelem_MU_"//trim(adjustl(char_LF))//"_j"//trim(adjustl(char_jI)) &
-              //"_j"//trim(adjustl(char_jF))//"_b1.rchm"
+              filename =  "matelem_MU_"//trim(adjustl(char_LF))//"_j"//trim(adjustl(char_jI))//"_j"//trim(adjustl(char_jF))//"_b1.rchm"
               !
               call IOstart(trim(filename),richunit(indI,indF,iLF))
               !
