@@ -7,6 +7,7 @@ Before using make please make sure to install gfortran, lapack and libblas:
 sudo apt-get install gfortran liblapack-dev libblas-dev
 ```
 
+## Making process
 After that, run
 ```bash
 make
