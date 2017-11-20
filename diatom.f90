@@ -22,24 +22,24 @@ module diatom_module
   ! Type to describe different terms from the hamiltonian, e.g. potential energy, spin-orbit, <L^2>, <Lx>, <Ly> functions.
   !
   integer(ik),parameter   :: verbose=5
-  integer(ik),parameter   :: Nobjects = 15  ! number of different terms of the Hamiltonian 
+  integer(ik),parameter   :: Nobjects = 15  ! number of different terms of the Hamiltonian
   !                                          (poten,spinorbit,L2,LxLy,spinspin,spinspino,bobrot,spinrot,diabatic,
   !                                             lambda-opq,lambda-p2q)
   !
   ! In order to add a new field:
   ! 1. Change Nobjects
   ! 2. Add the name of the field to the CASE line where all fields are listed: case("SPIN-ORBIT","SPIN-ORBIT-X"....
-  ! 3. Add the CASE-section describing the input of the new field 
+  ! 3. Add the CASE-section describing the input of the new field
   ! 4. Add a similar CASE-section describing the input of the new field to the CASE("ABINITIO") part
-  ! 5. Introduce a new name for the new field (object). 
+  ! 5. Introduce a new name for the new field (object).
   ! 6. Define new array in type(fieldT),pointer .....
-  ! 7. Add a new case to all cases where the fieds appear: at the end of the input subroutine, 
+  ! 7. Add a new case to all cases where the fieds appear: at the end of the input subroutine,
   !    two times in in map_fields_onto_grid, in duo_j0, in sf_fitting
   ! 8. Add corresposponding check_and_print_coupling in map_fields_onto_grid
   ! 9. Add the corresponding name of the field to  "use diatom_module,only" in "refinement"
   !
   ! Current list of fields:
-  ! 
+  !
   !        case (1) poten(iterm)
   !        case (2) spinorbit(iterm)
   !        case (3) l2(iterm)
@@ -102,15 +102,15 @@ module diatom_module
     real(rk) :: value = 0.0_rk
   end type braketT
   !
-  ! files with the eigenvectors 
+  ! files with the eigenvectors
   !
   type  eigenfileT
     !
     character(len=cl)  :: dscr       ! file with fingeprints and descriptions of each levels + energy values
-    character(len=cl)  :: primitives ! file with the primitive quantum numbres   
-    character(len=cl)  :: vectors    ! eigenvectors stored here 
+    character(len=cl)  :: primitives ! file with the primitive quantum numbres
+    character(len=cl)  :: vectors    ! eigenvectors stored here
     !
-  end type  eigenfileT 
+  end type  eigenfileT
   !
   type weightT
     character(cl) :: wtype = 'GRID'
@@ -127,7 +127,7 @@ module diatom_module
     character(len=cl)    :: class='NONE' ! Identifying class of the function (poten, spinorbit,dipole,abinitio etc)
     !
     ! variable used for GRID curves to specify interpolation and extrapolation  options
-    ! 
+    !
     character(len=cl)    :: interpolation_type='CUBICSPLINES'
     !
     !character(len=cl)    :: interpolation_type='QUINTICSPLINES'
@@ -149,17 +149,17 @@ module diatom_module
     real(rk)             :: factor=1.0_rk      ! defines if the term is imaginary or real
     real(rk)             :: fit_factor=1.0     ! defines if the term is imaginary or real
     real(rk),pointer     :: value(:)=>null()   ! Expansion parameter or grid values from the input
-    type(symmetryT)      :: parity       ! parity of the electronic state as defined by the molecular inversion (g,u), 
+    type(symmetryT)      :: parity       ! parity of the electronic state as defined by the molecular inversion (g,u),
      !                                        or laboratory inversion (+,-)
     real(rk),pointer     :: gridvalue(:) ! Expansion parameter or a grid value on the grid used inside the program
     real(rk),pointer     :: weight(:)    ! fit (1) or no fit (0)
     real(rk),pointer     :: grid(:)      ! grid value
     real(rk),pointer     :: matelem(:,:) ! matrix elements
-    real(rk)             :: refvalue = 0 ! reference value will be used as a shift to be applied to the ab initio function used 
+    real(rk)             :: refvalue = 0 ! reference value will be used as a shift to be applied to the ab initio function used
     !                                         for the fitting constraints
     character(len=cl),pointer :: forcename(:) ! The parameter name
     integer(ik)          :: nbrakets=0   ! total number of different combinations of lambda and sigma in matrix elements (maximum 4)
-    type(braketT)        :: braket(4)   ! here all possible combinations of values <+/-lambda,+/-sigma|A|+/-lambdaj,+/-sigma> 
+    type(braketT)        :: braket(4)   ! here all possible combinations of values <+/-lambda,+/-sigma|A|+/-lambdaj,+/-sigma>
     !                                                                                                                  can be listed
     integer(ik)          :: imin         ! grid point index at which a potential energy curve is minimum
     real(rk)             :: Vimin        ! V(imin), minimum of potential energy curve on the grid in cm-1
@@ -189,7 +189,7 @@ module diatom_module
     type(linkT),pointer   :: link(:)       ! address to link with the fitting parameter in a different object in the fit
     logical               :: morphing = .false.    ! When morphing is the field is used to morph the ab initio couterpart
     !                                                towards the final object
-    logical               :: molpro = .false.      ! The object is given in the molpro representaion (|x> and |y>) 
+    logical               :: molpro = .false.      ! The object is given in the molpro representaion (|x> and |y>)
     integer(ik)           :: ix_lz_y = 0           ! The value of the matrix element (-I)<x|Lz|y> for i-state
     integer(ik)           :: jx_lz_y = 0           ! The value of the matrix element (-I)<x|Lz|y> for j-state
     type(weightT)         :: weighting             ! When morphing is the field is used to morph the ab initio couterpart
@@ -216,10 +216,10 @@ module diatom_module
       integer(ik)         :: total_parameters =0  !  total number of parameters used to define different hamiltonian fields
       real(rk)            :: degen_threshold = 1e-6_rk
       real(rk),pointer    :: j_list(:)     ! J values processed
-      integer(ik)         :: nJ = 1        ! Number of J values processed 
+      integer(ik)         :: nJ = 1        ! Number of J values processed
       character(len=cl)   :: IO_eigen = 'NONE'   ! we can either SAVE to or READ from the eigenfunctions from an external file
-      character(len=cl)   :: IO_dipole = 'NONE'  ! we can either SAVE to or READ from an external file the dipole moment 
-      !                                                matrix elements on the contr. basis 
+      character(len=cl)   :: IO_dipole = 'NONE'  ! we can either SAVE to or READ from an external file the dipole moment
+      !                                                matrix elements on the contr. basis
       type(eigenfileT)    :: eigenfile
       character(len=cl)   :: symmetry = 'CS(M)'    ! molecular symmetry
       real(rk)   :: diag_L2_fact = 1._rk    ! specifies the convention used for the diagonal contribution
@@ -314,12 +314,12 @@ module diatom_module
   end type landeT
   !
   type IntensityT
-     logical             :: do = .false.     ! process (.true.) or not (.false.) the intensity (or TM) calculations 
+     logical             :: do = .false.     ! process (.true.) or not (.false.) the intensity (or TM) calculations
      character(cl)       :: action           ! type of the intensity calculations:
                                              ! absorption, emission, tm (transition moments),
-                                             !  raman, and so on. 
+                                             !  raman, and so on.
      real(rk)            :: temperature      ! temperature in K
-     real(rk)            :: part_func=0      ! partition function 
+     real(rk)            :: part_func=0      ! partition function
      real(rk)            :: ZPE=0            ! zero point energy
      type(thresholdsT)   :: threshold        ! different thresholds
      real(rk),pointer    :: gns(:)           ! nuclear stat. weights
@@ -328,20 +328,20 @@ module diatom_module
      real(rk)            :: erange_low(1:2)  ! energy range for the lower state
      real(rk)            :: erange_upp(1:2)  ! energy range for the upper state
      real(rk)            :: J(1:2)           ! range of J-values, from..to; in order to avoid double counting of transitions
-                                             ! in the calculations it is always assumed that 
+                                             ! in the calculations it is always assumed that
                                              ! J1<=J_lower<=J2 and J1<=J_upper<J2;
                                              !
-     type(quantaT) :: lower                   ! lower state range of the quantun numbers employed 
-     type(quantaT) :: upper                   ! upper state range of the quantun numbers employed 
-                                             ! in intensity calculations; (imode,1:2), 
-                                             ! where 1 stands for the beginning and 2 for the end. 
+     type(quantaT) :: lower                   ! lower state range of the quantun numbers employed
+     type(quantaT) :: upper                   ! upper state range of the quantun numbers employed
+                                             ! in intensity calculations; (imode,1:2),
+                                             ! where 1 stands for the beginning and 2 for the end.
      !
      integer(ik)         :: swap_size    = 0 ! the number of vectors to keep in memory
      character(cl)       :: swap = "NONE"    ! whether save the compacted vectors or read
      character(cl)       :: swap_file  ="compress"   ! where swap the compacted eigenvectors to
      character(cl)       :: linelist_file="NONE"   ! filename for the line list (filename.states and filename.trans)
      integer(ik)         :: int_increm = 1e9 ! used to print out the lower energies needed to select int_increm intensities
-     real(rk)            :: factor = 1.0d0   ! factor <1 to be applied the maxsize of the vector adn thus to be shrunk 
+     real(rk)            :: factor = 1.0d0   ! factor <1 to be applied the maxsize of the vector adn thus to be shrunk
      logical             :: matelem =.false.  ! switch for the line-strenth-type matelems  (matrix elements of the dipole moment)
      logical             :: lande_calc = .false.   ! checks whether calculation for Lande should be conducted
      !
@@ -357,7 +357,7 @@ module diatom_module
   type fittingT
      !
      logical              :: run
-     integer(ik)          :: nJ = 1        ! Number of J values processed 
+     integer(ik)          :: nJ = 1        ! Number of J values processed
      real(rk),pointer     :: j_list(:)     ! J-values processed in the fit
      integer(ik)          :: iparam(1:2) = (/1,100000/)
      integer(ik)          :: itermax = 500
@@ -410,7 +410,7 @@ module diatom_module
   !
   logical :: gridvalue_allocated  = .false.
   logical :: fields_allocated  = .false.
-  real(rk),parameter :: enermax = 100000.0_rk  ! largest energy allowed 
+  real(rk),parameter :: enermax = 100000.0_rk  ! largest energy allowed
   !
   public ReadInput,poten,spinorbit,l2,lxly,abinitio,brot,map_fields_onto_grid,fitting,&
          jmin,jmax,vmax,fieldmap,Intensity,eigen,basis,Ndipoles,dipoletm,linkT,three_j
@@ -435,7 +435,7 @@ module diatom_module
     character(len=cl) :: w,ioname
     character(len=wl) :: large_fmt
     !
-    integer(ik)       :: iut !  iut is a unit number. 
+    integer(ik)       :: iut !  iut is a unit number.
     !
     type(fieldT),pointer      :: field
     logical :: eof,include_state,allgrids
@@ -509,10 +509,10 @@ module diatom_module
         case("DO_NOT_ECHO_INPUT") !
           job%zEchoInput = .false.
 
-        case("DO_NOT_SHIFT_PECS") ! 
+        case("DO_NOT_SHIFT_PECS") !
           job%zShiftPECsToZero = .false.
 
-        case("DO_NOT_INCLUDE_JS_COUPLING") ! 
+        case("DO_NOT_INCLUDE_JS_COUPLING") !
           job%zExclude_JS_coupling = .true.
 
         case("") ! do nothing in case of blank lines
@@ -521,7 +521,7 @@ module diatom_module
         case ("SOLUTIONMETHOD")
           call readu(w)
           solution_method = trim(w)
-          ! 
+          !
         case ("L2CONVENTION")
           !
           call readu(w)
@@ -547,7 +547,7 @@ module diatom_module
           !
           select case(w)
               !
-            case default 
+            case default
               !
               call report("Unexpected argument in MEMORY",.true.)
               !
@@ -595,7 +595,7 @@ module diatom_module
             !
           case default
             !
-            ! write (out,"('  I see this molecule for the first time.')")  
+            ! write (out,"('  I see this molecule for the first time.')")
             !
             !call report ("Unrecognized unit name "//trim(w)//"implemented: (C2,ALO,X2, XY)",.true.)
             !
@@ -814,9 +814,9 @@ module diatom_module
              !
              job%IO_eigen = trim(w)
              !
-             if (all(trim(w)/=(/'READ','SAVE','NONE'/))) then 
+             if (all(trim(w)/=(/'READ','SAVE','NONE'/))) then
                call report('ReadInput: illegal key in CHECK_POINT '//trim(w),.true.)
-             endif 
+             endif
              !
              !job%eigenfile%dscr       = 'eigen_descr'
              !job%eigenfile%primitives = 'eigen_quanta'
@@ -832,24 +832,24 @@ module diatom_module
              !
              call readu(job%IO_dipole)
              !
-             if (all(trim(w)/=(/'READ','SAVE','NONE'/))) then 
+             if (all(trim(w)/=(/'READ','SAVE','NONE'/))) then
                call report('ReadInput: illegal key in CHECK_POINT '//trim(w),.true.)
-             endif 
+             endif
              !
-           case default 
+           case default
              !
              call report('ReadInput: illegal key in CHECK_POINT '//trim(w),.true.)
              !
-           end select 
+           end select
            !
            call read_line(eof,iut) ; if (eof) exit
            call readu(w)
            !
-         enddo 
+         enddo
          !
-         if (trim(w)/="".and.trim(w)/="END") then 
+         if (trim(w)/="".and.trim(w)/="END") then
             call report('ReadInput: wrong last line in CHECK_POINTS ='//trim(w),.true.)
-         endif 
+         endif
          !
        case ("DIAGONALIZER","EIGENSOLVER","FINALSTATES")
          !
@@ -1193,7 +1193,7 @@ module diatom_module
                 if (action%frequency) then
                   call readf(fitting%obs(iobs)%Jrot_)
                   !
-                  i = 0 
+                  i = 0
                   matchfound = .false.
                   do while( i<fitting%nJ.and..not.matchfound )
                     !
@@ -1353,7 +1353,7 @@ module diatom_module
        case("SPIN-ORBIT","SPIN-ORBIT-X","POTEN","POTENTIAL","L2","L**2","LXLY","LYLX","ABINITIO",&
             "LPLUS","L+","L_+","LX","DIPOLE","TM","DIPOLE-MOMENT","DIPOLE-X",&
             "SPIN-SPIN","SPIN-SPIN-O","BOBROT","BOB-ROT","SPIN-ROT","DIABATIC","DIABAT",&
-            "LAMBDA-OPQ","LAMBDA-P2Q","LAMBDA-Q","LAMBDAOPQ","LAMBDAP2Q","LAMBDAQ") 
+            "LAMBDA-OPQ","LAMBDA-P2Q","LAMBDA-Q","LAMBDAOPQ","LAMBDAP2Q","LAMBDAQ")
           !
           ibraket = 0
           !
@@ -1364,7 +1364,7 @@ module diatom_module
              !
           case("DIPOLE","TM","DIPOLE-MOMENT","DIPOLE-X")
              !
-             if (idip==0) then 
+             if (idip==0) then
                 allocate(dipoletm(ncouples),stat=alloc)
              endif
              !
@@ -1543,7 +1543,7 @@ module diatom_module
              field%jref = field%iref
              field%class = "POTEN"
              !
-             ! Check if it was defined before 
+             ! Check if it was defined before
              do istate=1,iobject(1)-1
                 if (field%iref==poten(istate)%iref) then
                   call report ("poten object is repeated",.true.)
@@ -1575,7 +1575,7 @@ module diatom_module
                enddo
              enddo loop_istate_l2
              !
-             ! Check if it was defined before 
+             ! Check if it was defined before
              do istate=1,iobject(3)-1
                 if (iref==l2(istate)%iref.and.jref==l2(istate)%jref) then
                   call report ("L2 object is repeated",.true.)
@@ -1619,7 +1619,7 @@ module diatom_module
                  endif
              enddo loop_istate_bobrot
              !
-             ! Check if it was defined before 
+             ! Check if it was defined before
              do istate=1,iobject(7)-1
                 if (iref==bobrot(istate)%iref.and.jref==bobrot(istate)%jref) then
                   call report ("BROT object is repeated",.true.)
@@ -1666,7 +1666,7 @@ module diatom_module
                enddo
              enddo loop_istate_ss
              !
-             ! Check if it was defined before 
+             ! Check if it was defined before
              do istate=1,iobject(5)-1
                 if (iref==spinspin(istate)%iref.and.jref==spinspin(istate)%jref) then
                   call report ("Spin-spin object is repeated",.true.)
@@ -1693,7 +1693,7 @@ module diatom_module
              !
              if (action%fitting) call report ("Spin-spin cannot appear after FITTING",.true.)
              !
-             ! non-diagonal spin-spin term 
+             ! non-diagonal spin-spin term
              !
           case("SPIN-SPIN-O")
              !
@@ -1715,7 +1715,7 @@ module diatom_module
                enddo
              enddo loop_istate_sso
              !
-             ! Check if it was defined before 
+             ! Check if it was defined before
              do istate=1,iobject(6)-1
                 if (iref==spinspino(istate)%iref.and.jref==spinspino(istate)%jref) then
                   call report ("SS-o object is repeated",.true.)
@@ -1743,7 +1743,7 @@ module diatom_module
              !
           case("SPIN-ROT")
              !
-             ! spin-rotation (gammma) term 
+             ! spin-rotation (gammma) term
              !
              iobject(8) = iobject(8) + 1
              !
@@ -1763,7 +1763,7 @@ module diatom_module
                enddo
              enddo loop_istate_sr
              !
-             ! Check if it was defined before 
+             ! Check if it was defined before
              do istate=1,iobject(8)-1
                 if (iref==spinrot(istate)%iref.and.jref==spinrot(istate)%jref) then
                   call report ("SR object is repeated",.true.)
@@ -1813,7 +1813,7 @@ module diatom_module
                enddo
              enddo loop_istate_diab
              !
-             ! Check if it was defined before 
+             ! Check if it was defined before
              do istate=1,iobject(9)-1
                 if (iref==diabatic(istate)%iref.and.jref==diabatic(istate)%jref) then
                   call report ("diabatic object is repeated",.true.)
@@ -1862,7 +1862,7 @@ module diatom_module
                enddo
              enddo loop_istate_10
              !
-             ! Check if it was defined before 
+             ! Check if it was defined before
              do istate=1,iobject(10)-1
                 if (iref==lambdaopq(istate)%iref.and.jref==lambdaopq(istate)%jref) then
                   call report ("lambdaopq object is repeated",.true.)
@@ -1912,7 +1912,7 @@ module diatom_module
                enddo
              enddo loop_istate_11
              !
-             ! Check if it was defined before 
+             ! Check if it was defined before
              do istate=1,iobject(11)-1
                 if (iref==lambdap2q(istate)%iref.and.jref==lambdap2q(istate)%jref) then
                   call report ("lambdap2q object is repeated",.true.)
@@ -1960,7 +1960,7 @@ module diatom_module
                enddo
              enddo loop_istate_12
              !
-             ! Check if it was defined before 
+             ! Check if it was defined before
              do istate=1,iobject(12)-1
                 if (iref==lambdaq(istate)%iref.and.jref==lambdaq(istate)%jref) then
                   call report ("lambdaq object is repeated",.true.)
@@ -2395,7 +2395,7 @@ module diatom_module
                   !
                   if (poten(field%istate)%ix_lz_y/=field%ix_lz_y) then
                     !
-                    write(out,"('input: ',a,2i4,' <x|lz|y> disagree with the poten-value ',2i8)") & 
+                    write(out,"('input: ',a,2i4,' <x|lz|y> disagree with the poten-value ',2i8)") &
                             field%class,field%iref,field%jref,poten(field%istate)%ix_lz_y/=field%ix_lz_y
                     call report (" <x|lz|y> disagree with the poten-value",.true.)
                     !
@@ -2411,14 +2411,14 @@ module diatom_module
                   !
                   if (poten(field%jstate)%ix_lz_y/=field%jx_lz_y) then
                     !
-                    write(out,"('input: ',a,2i4,' <x|lz|y> disagree with previsouly given <x|Lz|z> value ',2i8)") & 
+                    write(out,"('input: ',a,2i4,' <x|lz|y> disagree with previsouly given <x|Lz|z> value ',2i8)") &
                             field%class,field%iref,field%jref,poten(field%istate)%ix_lz_y/=field%jx_lz_y
                     call report (" <x|lz|y> disagree with the pprevisouly given <x|Lz|z>-value",.true.)
                     !
                   endif
                 endif
                 !
-              enddo                
+              enddo
               !
             case("UNITS")
               !
@@ -2508,12 +2508,12 @@ module diatom_module
               !
               call readu(field%weighting%wtype)
               !
-              if (trim(field%weighting%wtype)=="PS1997") then 
+              if (trim(field%weighting%wtype)=="PS1997") then
                 !
                 call readf(field%weighting%alpha)
                 call readf(field%weighting%Vtop)
                 !
-              endif 
+              endif
               !
             case("MORPHING","MORPH")
               !
@@ -2550,7 +2550,7 @@ module diatom_module
                     write(out, '(A)') 'Fatal error reading FACTOR. Trying to read as a number: ' // trim(w)
                     write(out, '(A)') 'Stopping now. Please check the input.'
                     stop
-                  endif 
+                  endif
                 end select
                 !
              enddo
@@ -2621,7 +2621,7 @@ module diatom_module
               if (abs(field%braket(ibraket)%ilambda)/=poten(istate)%lambda.or. &
                   abs(field%braket(ibraket)%jlambda)/=poten(jstate)%lambda) then
                 write(out,'("bra-ket lambdas (",2i4,") do not agree with the state lambdas (",2i4,") ")') &
-                           field%braket(ibraket)%ilambda, & 
+                           field%braket(ibraket)%ilambda, &
                            field%braket(ibraket)%jlambda,poten(istate)%lambda,poten(jstate)%lambda
                 stop "Illegal bra-ket lambdas"
               endif
@@ -2663,7 +2663,7 @@ module diatom_module
                 !
                 write(out,'(A,i4," of the field ",i4," is inconsistent with multiplicity of jmin/jmax = ",2f8.1)') &
                             "The multiplicity ", field%multi,field%iref,jmin,jmax
-                write(out,'("Please check that Jrot at the top of input is integer/half-integer.")') 
+                write(out,'("Please check that Jrot at the top of input is integer/half-integer.")')
                 call report("The multiplicity of the field is inconsistent with Jrot/Jlist")
                 !
               endif
@@ -2802,7 +2802,7 @@ module diatom_module
                      !
                      call readu(w)
                      !
-                     if (trim(w(1:1))=="F") then 
+                     if (trim(w(1:1))=="F") then
                        !
                        field%weight(iparam) = 1.0_rk
                        !
@@ -2810,7 +2810,7 @@ module diatom_module
                        !
                      elseif(trim(w(1:1))/="L") then
                        !
-                       ! old input? 
+                       ! old input?
                        !
                        field%weight(iparam) = f_t
                        read(w,*) field%value(iparam)
@@ -2831,7 +2831,7 @@ module diatom_module
                        !
                      endif
                      !
-                   endif 
+                   endif
                    !
                    job%total_parameters = job%total_parameters + 1
                    !
@@ -2858,14 +2858,14 @@ module diatom_module
             call readu(w)
           enddo
          !
-       case("SYMGROUP","SYMMETRY","SYMM","SYM","SYM_GROUP") 
+       case("SYMGROUP","SYMMETRY","SYMM","SYM","SYM_GROUP")
          !
-         if (symmetry_defined) then 
+         if (symmetry_defined) then
             !
-            write (out,"('input: Symmetry is already defined, SYMGROUP should not apear after INTENSITY')") 
+            write (out,"('input: Symmetry is already defined, SYMGROUP should not apear after INTENSITY')")
             stop 'input - SYMGROUP should not apear after INTENSITY'
             !
-         endif 
+         endif
          !
          call readu(w)
          !
@@ -2874,11 +2874,11 @@ module diatom_module
          if (trim(job%symmetry)=="CS") job%symmetry = "CS(M)"
          if (trim(job%symmetry)=="C2V") job%symmetry = "C2V(M)"
          !
-         if (trim(job%symmetry)/="CS(M)".and.trim(job%symmetry)/="C2V(M)") then 
+         if (trim(job%symmetry)/="CS(M)".and.trim(job%symmetry)/="C2V(M)") then
            call report ("SYMGROUP: ONLY CS(M) or C2V(M) are allowed, not "//trim(w),.true.)
-         endif 
+         endif
          !
-         ! Initialize the group symmetry 
+         ! Initialize the group symmetry
          !
          call SymmetryInitialize(job%symmetry)
          !
@@ -2904,21 +2904,21 @@ module diatom_module
            endif
          endif
          !
-         if (Nestates==0) then 
+         if (Nestates==0) then
             !
-            write (out,"('input: INTENSITY cannot appear before anypoten entries')") 
+            write (out,"('input: INTENSITY cannot appear before anypoten entries')")
             stop 'input - INTENSITY defined before all poten entries'
             !
-         endif 
+         endif
          !
-         if (.not.symmetry_defined) then 
+         if (.not.symmetry_defined) then
            !
-           ! Initialize symmetry if it has not been done before 
+           ! Initialize symmetry if it has not been done before
            !
-           if ((m1<small_.or.m2<small_).and.(trim(symbol1)=="Undefined".or.trim(symbol2)=="Undefined")) then 
+           if ((m1<small_.or.m2<small_).and.(trim(symbol1)=="Undefined".or.trim(symbol2)=="Undefined")) then
                write(out,"('at least one of MASSES or ATOMS should be defined before INTENSITY')")
-               call report("either masses or atom should be defined before INTENSITY",.true.) 
-           endif 
+               call report("either masses or atom should be defined before INTENSITY",.true.)
+           endif
            !
            if ( ( m1>0.and.abs(m1-m2)<small_ ).or.( trim(symbol1)/="Undefined".and.trim(symbol1)==trim(symbol2) ) ) then
              !
@@ -2930,7 +2930,7 @@ module diatom_module
              !
            endif
            !
-           ! Initialize the group symmetry 
+           ! Initialize the group symmetry
            !
            call SymmetryInitialize(job%symmetry)
            !
@@ -2941,7 +2941,7 @@ module diatom_module
            !
            job%isym_do = .true.
            !
-         endif 
+         endif
          !
          allocate(intensity%gns(sym%Nrepresen),intensity%isym_pairs(sym%Nrepresen),stat=alloc)
          if (alloc/=0) stop 'input, intensity-arrays - out of memory'
@@ -2975,7 +2975,7 @@ module diatom_module
              !
              if (trim(intensity%action)=='DIPOLE-TM') intensity%action = 'TM'
              !
-             ! L Lodi: character length must be specified in the array constructor for Fortran 2003 conformance 
+             ! L Lodi: character length must be specified in the array constructor for Fortran 2003 conformance
              if (any(trim(intensity%action)==(/ character(len=wl) :: 'TM','ABSORPTION','EMISSION','PARTFUNC'/))) then
                !
                action%intensity = .true.
@@ -3021,7 +3021,7 @@ module diatom_module
              !
            case ("NSPIN","NUCLEAR-SPIN","NSPINS")
              !
-             if ((m1<small_.or.m2<small_).and.(trim(symbol1)=="Undefined".or.trim(symbol2)=="Undefined")) & 
+             if ((m1<small_.or.m2<small_).and.(trim(symbol1)=="Undefined".or.trim(symbol2)=="Undefined")) &
                  call report("masses or atom should be defined before nuclear-spins",.true.)
              !
              call readf(Nspin1)
@@ -3032,7 +3032,7 @@ module diatom_module
                gns_a = 0.5_rk*((2.0_rk*Nspin1+1.0_rk)**2+(2.0_rk*Nspin1+1.0_rk))
                gns_b = 0.5_rk*((2.0_rk*Nspin1+1.0_rk)**2-(2.0_rk*Nspin1+1.0_rk))
                !
-               if (mod(nint(2.0*Nspin1),2)==1) then 
+               if (mod(nint(2.0*Nspin1),2)==1) then
                  !
                  intensity%gns(1:2) = gns_b
                  intensity%gns(3:4) = gns_a
@@ -3059,13 +3059,13 @@ module diatom_module
                i = i + 1
                call readf(intensity%gns(i))
                !
-               ! currently with Cs(M) we have to allow for all symmetries 
+               ! currently with Cs(M) we have to allow for all symmetries
                !
                !if (intensity%gns(i)<small_) job%isym_do(i) = .false.
                !
              enddo
              !
-             if (i/=sym%Nrepresen.and.sym%Nrepresen==2) then 
+             if (i/=sym%Nrepresen.and.sym%Nrepresen==2) then
                !
                intensity%gns(2) = intensity%gns(1)
                !
@@ -3074,7 +3074,7 @@ module diatom_module
                write (out,"('input: illegal number entries in gns: ',i8,' /= ',i8)") i,sym%Nrepresen
                stop 'input - illegal number entries in gns'
                !
-             endif 
+             endif
              !
            case('SELECTION','SELECTION_RULES','SELECT','PAIRS')
              !
@@ -3088,12 +3088,12 @@ module diatom_module
                !
              enddo
              !
-             if (i/=sym%Nrepresen) then 
+             if (i/=sym%Nrepresen) then
                !
                write (out,"('input: illegal number entries in SELECTION: ',i8,' /= ',i8)") i,sym%Nrepresen
                stop 'input - illegal number entries in SELECTION'
                !
-             endif 
+             endif
              !
            case('ZPE')
              !
@@ -3104,7 +3104,7 @@ module diatom_module
              !
              call readf(intensity%j(1))
              !
-             if (nitems>3) then 
+             if (nitems>3) then
                call readu(w)
                if (trim(w)/="-") call report ("Unrecognized delimeter, can be comma or dash "//trim(w),.true.)
              endif
@@ -3116,7 +3116,7 @@ module diatom_module
              call readf(intensity%freq_window(1))
              call readf(intensity%freq_window(2))
              !
-             if (intensity%freq_window(1)<small_) intensity%freq_window(1) = -small_ 
+             if (intensity%freq_window(1)<small_) intensity%freq_window(1) = -small_
              !
            case('ENERGY')
              !
@@ -3131,20 +3131,20 @@ module diatom_module
                   call readf(intensity%erange_low(1))
                   call readf(intensity%erange_low(2))
                   !
-                  if (intensity%erange_low(1)<small_) intensity%erange_low(1)= -small_ 
+                  if (intensity%erange_low(1)<small_) intensity%erange_low(1)= -small_
                   !
                 case("UPPER","UPP","UP","U")
                   !
                   call readf(intensity%erange_upp(1))
                   call readf(intensity%erange_upp(2))
                   !
-                  if (intensity%erange_upp(1)<small_) intensity%erange_upp(1)=-small_ 
+                  if (intensity%erange_upp(1)<small_) intensity%erange_upp(1)=-small_
                   !
-                end select 
+                end select
                 !
                 call readu(w)
                 !
-             enddo 
+             enddo
              !
            !case('LOWER','LOW','L')
            !  !
@@ -3162,14 +3162,14 @@ module diatom_module
              !
              call report ("Unrecognized keyword (error 04): "//trim(w),.true.)
              !
-           end select 
+           end select
            !
            call read_line(eof,iut) ; if (eof) exit
            call readu(w)
            !
          enddo
          !
-         if (trim(intensity%action) == 'ABSORPTION'.or.trim(intensity%action) == 'EMISSION') then 
+         if (trim(intensity%action) == 'ABSORPTION'.or.trim(intensity%action) == 'EMISSION') then
            !
            ! define the selection pairs by gns if not yet defined
            !
@@ -3181,20 +3181,20 @@ module diatom_module
              !
              do j = 1,sym%Nrepresen
                !
-               if (i/=j.and.intensity%isym_pairs(j)==0.and.intensity%gns(i)==intensity%gns(j)) then 
+               if (i/=j.and.intensity%isym_pairs(j)==0.and.intensity%gns(i)==intensity%gns(j)) then
                  !
                  i_t = i_t + 1
                  !
                  intensity%isym_pairs(i) = i_t
                  intensity%isym_pairs(j) = i_t
                  !
-               endif 
+               endif
                !
              enddo
              !
            enddo
            !
-         endif 
+         endif
          !
        case default
          call report ("Principal keyword "//trim(w)//" not recognized",.true.)
@@ -3305,7 +3305,7 @@ module diatom_module
             !
             Nparam = 1 ; abinitio(iabi)%Nterms = 0
             !
-            allocate(abinitio(iabi)%value(Nparam),abinitio(iabi)%forcename(Nparam),abinitio(iabi)%grid(Nparam), & 
+            allocate(abinitio(iabi)%value(Nparam),abinitio(iabi)%forcename(Nparam),abinitio(iabi)%grid(Nparam), &
                      abinitio(iabi)%weight(Nparam),stat=alloc)
             call ArrayStart(trim(abinitio(iabi)%type),alloc,Nparam,kind(abinitio(iabi)%value))
             call ArrayStart(trim(abinitio(iabi)%type),alloc,Nparam,kind(abinitio(iabi)%grid))
@@ -3331,7 +3331,7 @@ module diatom_module
       !
       if (allgrids.and.action%fitting) then
         call report ("Fitting is not possible: No field of not the GRID-type!",.true.)
-      endif 
+      endif
       !
     !endif
     !
@@ -3355,7 +3355,7 @@ module diatom_module
          !
          job%isym_do = .true.
          !
-    endif 
+    endif
     ! !I think the following message should be outputed only if line intensity
     ! are computed, not all the time.
     !write(out,"('A dipole threshold of ',e18.8,' will be used')") intensity%threshold%dipole
@@ -3363,7 +3363,7 @@ module diatom_module
     write(out,"('Symmetry was not specified. ',a,' is assumed based on the masses/atoms', /)") trim(job%symmetry)
     !
     if (iobject(1)/=nestates) then
-      write(out,'("The number of states required ",i8," is inconcistent (smaller) with the number of PECs ",i8," included")') & 
+      write(out,'("The number of states required ",i8," is inconcistent (smaller) with the number of PECs ",i8," included")') &
                  nestates,iobject(1)
       stop "Illegal number of states: ipo/=nestates"
     endif
@@ -3393,7 +3393,7 @@ module diatom_module
       if( poten(istate)%Omega_min < omega_) omega_ = poten(istate)%Omega_min
     enddo
     !
-    !jmin_ = abs( real(lambda_) ) ; 
+    !jmin_ = abs( real(lambda_) ) ;
     !if (.not.integer_spin) jmin_ = abs( real(lambda_)-0.5_rk )
     !
     !jmin_ = abs( real(lambda_)-abs(spin_) ) ! ; if (.not.integer_spin) jmin_ = jmin_-0.5_rk
@@ -3408,7 +3408,7 @@ module diatom_module
     ! check the L2 terms:
     !
     !if (Nl2>nestates) then
-    !  write(out,'("The number of L2 components ",i8," is inconsistent with the number of electronic states ",i8," included")') & 
+    !  write(out,'("The number of L2 components ",i8," is inconsistent with the number of electronic states ",i8," included")') &
     !              Nl2,nestates
     !  stop "Illegal number of L2 components: Nl2>nestates"
     !endif
@@ -3430,9 +3430,9 @@ module diatom_module
       !
       character(len=cl),intent(in) :: w
       type(quantaT),intent(inout)  :: field
-      
+
       do while (trim(w)/="")
-        !      
+        !
         select case (w)
           !
         case("J")
@@ -3475,7 +3475,7 @@ module diatom_module
         !
         call readu(w)
         !
-     enddo 
+     enddo
      !
     end subroutine input_quanta
 
@@ -3601,7 +3601,7 @@ module diatom_module
             !
             ! print out quanta
             !
-            if (iverbose>=4) write(out,'(i6,1x,f8.1,1x,i4,1x,f8.1,1x,f8.1,1x,i4,1x,f8.1,3x,a)') & 
+            if (iverbose>=4) write(out,'(i6,1x,f8.1,1x,i4,1x,f8.1,1x,f8.1,1x,i4,1x,f8.1,3x,a)') &
                              ilevel,jval,istate,quanta(ilevel)%spin,sigma,ilambda,omega,trim(poten(istate)%name)
             !
           endif
@@ -3756,7 +3756,7 @@ subroutine map_fields_onto_grid(iverbose)
      use functions,only : define_analytical_field
      !
      character(len=130)     :: my_fmt  !text variable containing formats for reads/writes
-     ! 
+     !
      integer(ik),intent(in) :: iverbose
      !
      integer(ik)             :: ngrid,alloc,j,nsub,Nmax,iterm,nterms,i,ipotmin,istate,jstate,itotal
@@ -3910,7 +3910,7 @@ subroutine map_fields_onto_grid(iverbose)
              stop "illegal iobject  "
           end select
           !
-          if (.not.gridvalue_allocated) then 
+          if (.not.gridvalue_allocated) then
             !
             allocate(field%gridvalue(ngrid),stat=alloc)
             call ArrayStart(trim(field%type),alloc,ngrid,kind(field%gridvalue))
@@ -3929,11 +3929,11 @@ subroutine map_fields_onto_grid(iverbose)
             if( field%grid(1) > rmin) then
                if (iverbose>=4) write(out, '(/,A)') 'Extrapolating at short bond length curve ' // trim(field%name) // &
                                  ' (class ' // trim(field%class) // ')'
-         
-         
+
+
                  np = 20              ! I always add `np' short bond length guide points
                 ! I go one step `beyond' rmin to minimize interpolating artifacts at the end of the interval
-         
+
                  x1=field%grid(1)  ; y1 =field%value(1)
                  x2=field%grid(2)  ; y2 =field%value(2)
                  allocate( xx(nterms+np), yy(nterms+np),ww(nterms+np) )
@@ -4010,7 +4010,7 @@ subroutine map_fields_onto_grid(iverbose)
                enddo
                !
                select case(field%class)
-         
+
                case ("POTEN")
                  if (iverbose>=4) write(out, '(A, I20)') 'Using De + A/r^6 extrapolation; points added = ', np
                  bb = (x1*x2)**6 * (y2-y1) / (x1**6 - x2**6)
@@ -4080,8 +4080,8 @@ subroutine map_fields_onto_grid(iverbose)
                ! Lorenzo Lodi, 7 April 2016
                ! Tests show that the present quintic spline interpolation does not give better interpolation results
                ! than cubic splines. Furthermore the error seems to decrease as npoints**(-4)
-               ! instead of npoints**(-6). The reason for this behaviour is yet unknown, but possibly related 
-               ! to a bad choice of the boundary conditions. 
+               ! instead of npoints**(-6). The reason for this behaviour is yet unknown, but possibly related
+               ! to a bad choice of the boundary conditions.
                !
                ! FOR NOW USE OF QUINTIC SPLINE INTERPOLATION IS NOT RECOMMENDED.
                ! USE CUBIC SPLINES INSTEAD
@@ -4154,8 +4154,8 @@ subroutine map_fields_onto_grid(iverbose)
      !
      ! Now morph the objects by applying the morphing function to the corresponding ab initio field if neccessary
      !
-     ifield = 0 
-     
+     ifield = 0
+
      object_loop2: do iobject = 1,Nobjects
         !
         Nmax = fieldmap(iobject)%Nfields
@@ -4195,7 +4195,7 @@ subroutine map_fields_onto_grid(iverbose)
             !
           case (Nobjects-1)
             !
-            ! no morphing for Brot 
+            ! no morphing for Brot
             cycle
             !
           case (Nobjects)
@@ -4211,24 +4211,24 @@ subroutine map_fields_onto_grid(iverbose)
           !
           if (field%morphing.and.iobject/=Nobjects-2) then
             !
-            ! check if ai field was defined 
+            ! check if ai field was defined
             !
             check_ai = sum((abinitio(ifield)%gridvalue)**2)
             !
-            if (check_ai<small_) then 
+            if (check_ai<small_) then
               !
               write(out,"('Corresponding ab initio field must be defined when using MORPHING for ',a)") field%name
               stop 'ab initio field is undefined while using MORPHING'
               !
             endif
-            ! 
+            !
             field%gridvalue = field%gridvalue*abinitio(ifield)%gridvalue
             !
           endif
           !
           ! Generate weights if an analytical expression is given
           !
-          if (trim(field%weighting%wtype)=="PS1997") then 
+          if (trim(field%weighting%wtype)=="PS1997") then
             !
             istate = field%iref
             beta = field%weighting%alpha
@@ -4244,12 +4244,12 @@ subroutine map_fields_onto_grid(iverbose)
               !
               np = max(min(ngrid,np),1)
               !
-              field%weight(i) = ( tanh(-beta*( poten(istate)%gridvalue(np) - Vmin - Vtop ) ) & 
+              field%weight(i) = ( tanh(-beta*( poten(istate)%gridvalue(np) - Vmin - Vtop ) ) &
                                    +1.000020000200002_rk )/2.000020000200002_rk
               !
             enddo
             !
-          endif  
+          endif
           !
           !
           ! transform from the MOLRPO to Duo representation
@@ -4279,12 +4279,12 @@ subroutine map_fields_onto_grid(iverbose)
 !      !
 !      ipotmin = minloc(poten(1)%gridvalue,dim=1) ; job%potmin = poten(1)%gridvalue(ipotmin)
 !      !
-!      if (ipotmin==1) then 
+!      if (ipotmin==1) then
 !        write(out,'("map_fields_onto_grid: The potential 1 does not seem to have a well defined minimum, rmin = r1"/)')
 !        stop 'map_fields_onto_grid: The potential-1s minimum is at r1'
-!      endif 
+!      endif
 !      !
-!      if (ipotmin==size(poten(1)%gridvalue)) then 
+!      if (ipotmin==size(poten(1)%gridvalue)) then
 !        write(out,'("map_fields_onto_grid: The potential 1 does not seem to have a well defined minimum, rmin=r2"/)')
 !        stop 'map_fields_onto_grid: The potential-1s minimum is at r2'
 !      endif
@@ -4294,7 +4294,7 @@ subroutine map_fields_onto_grid(iverbose)
      ! equilibrium quantities
      !
      loop_pecs: do istate=1,Nestates ! loop over potential energy curves
-        ! find minimum and maximum on the grid 
+        ! find minimum and maximum on the grid
        poten(istate)%imin  = minloc(poten(istate)%gridvalue,dim=1)
        poten(istate)%Vimin = poten(istate)%gridvalue( poten(istate)%imin )
        poten(istate)%imax  = maxloc(poten(istate)%gridvalue,dim=1)
@@ -4345,7 +4345,7 @@ subroutine map_fields_onto_grid(iverbose)
                       !  der3 = 4._rk*(-fmm + 2._rk*fm -2._rk*fp + fpp ) / h**3    ! 4-point, error h^2
                       !  der4 = 16._rk*(fmm-4._rk*fm+6._rk*f0-4._rk*fp+fpp) / h**4 ! 5-point, error h^2
 
-                      if(der2 ==0._rk)   der2 = tiny(1._rk) ! because we are going to divide by der2 
+                      if(der2 ==0._rk)   der2 = tiny(1._rk) ! because we are going to divide by der2
                       x1 = x0 - der1/der2
 
                      ! check convergence
@@ -4365,7 +4365,7 @@ subroutine map_fields_onto_grid(iverbose)
        ! From formulas 4.67 to 4.72 (pag. 155-156) of I. N. Levine, Molecular Spectroscopy, John Wiley & Sons (1975)
        poten(istate)%we  = bohr*sqrt(abs(der2)*hartree / (amass*umatoau) )
        poten(istate)%B0  = 0.5_rk*bohr**2*hartree /( amass*umatoau * x0**2 )
-       poten(istate)%xe  = (  (poten(istate)%B0**2*x0**4) / (12._rk*poten(istate)%we**5) )  & 
+       poten(istate)%xe  = (  (poten(istate)%B0**2*x0**4) / (12._rk*poten(istate)%we**5) )  &
                              * (10._rk*poten(istate)%B0*der3**2*x0**2-3._rk*der4*poten(istate)%we**2)
        poten(istate)%alphae  = -( 2._rk*poten(istate)%B0**2 / ( poten(istate)%we ) ) &
                                * (3._rk + (2._rk*poten(istate)%B0*der3*x0**3)/poten(istate)%we**2 )
@@ -4422,11 +4422,11 @@ subroutine map_fields_onto_grid(iverbose)
      call check_and_print_coupling(Nlambdaq,   iverbose,lambdaq,  "Lambda-q:")
      if(associated(dipoletm)) call check_and_print_coupling(Ndipoles,   iverbose,dipoletm, "Dipole moment functions:")
      !
-   contains 
+   contains
      !
      subroutine molpro_duo(field)
         !
-        use lapack,only : lapack_zheev     
+        use lapack,only : lapack_zheev
         !
         type(fieldT),intent(inout) :: field
         integer(ik) :: ix_lz_y,jx_lz_y,iroot,jroot,il_temp
@@ -4447,13 +4447,13 @@ subroutine map_fields_onto_grid(iverbose)
             jroot = 1
             !
             if (ix_lz_y/=0) then
-              a = 0 
+              a = 0
               a(1,2) = cmplx(0.0_rk,ix_lz_y , kind=rk)
               a(2,1) = cmplx(0.0_rk,-ix_lz_y, kind=rk)
               !
               call lapack_zheev(a,lambda_i)
               !
-              ! swap to have the first root positive 
+              ! swap to have the first root positive
               !
               f_t = a
               a(:,1) = f_t(:,2)
@@ -4467,14 +4467,14 @@ subroutine map_fields_onto_grid(iverbose)
               !
               a = a*cmplx(0.0_rk,1.0_rk, kind=rk)
               !
-            elseif (poten(field%istate)%parity%pm==-1) then 
+            elseif (poten(field%istate)%parity%pm==-1) then
               !
               a(1,1) =  cmplx(0.0_rk,1.0_rk, kind=rk)
               !
             endif
             !
             if (jx_lz_y/=0) then
-              b = 0 
+              b = 0
               b(1,2) = cmplx(0.0_rk,jx_lz_y , kind=rk)
               b(2,1) = cmplx(0.0_rk,-jx_lz_y, kind=rk)
               !
@@ -4482,7 +4482,7 @@ subroutine map_fields_onto_grid(iverbose)
               !
               call lapack_zheev(b,lambda_j)
               !
-              ! swap to have the first root positive 
+              ! swap to have the first root positive
               !
               f_t = b
               b(:,1) = f_t(:,2)
@@ -4498,7 +4498,7 @@ subroutine map_fields_onto_grid(iverbose)
               !
               f_t = matmul( conjg(transpose(b)),matmul(b0,(b)) )
               !
-            elseif (poten(field%jstate)%parity%pm==-1) then 
+            elseif (poten(field%jstate)%parity%pm==-1) then
               !
               b(1,1) =  cmplx(0.0_rk,1.0_rk, kind=rk)
               !
@@ -4511,7 +4511,7 @@ subroutine map_fields_onto_grid(iverbose)
               !
               if ((nint(field%sigmaj-field%sigmai))/=(field%lambda-field%lambdaj)) then
                 !
-                ! try to select the root#2 for the i-state first 
+                ! try to select the root#2 for the i-state first
                 !
                 if (field%lambda/=0.and.(nint(field%sigmaj-field%sigmai))==( lambda_i(2)-field%lambdaj ) ) then
                   !
@@ -4570,12 +4570,12 @@ subroutine map_fields_onto_grid(iverbose)
                 endif
                 !
               endif
-              ! 
+              !
             case ('L+','ABINITIO-LX')
               !
               !write(out,"('molpro_duo: this L+-part is not implemented')")
               !stop 'molpro_duo: this L+-part is not implemented'
-              ! 
+              !
             case ('DIPOLE')
               !
               !write(out,"('molpro_duo: this Dipole-part is not implemented')")
@@ -4591,10 +4591,10 @@ subroutine map_fields_onto_grid(iverbose)
             !omp parallel do private(i) schedule(guided)
             do i=1,ngrid
               !
-              coupling = 0 
+              coupling = 0
               if (ix_lz_y==0.and.jx_lz_y==0) then
                 !
-                coupling(1,1) = field%gridvalue(i)*field%complex_f 
+                coupling(1,1) = field%gridvalue(i)*field%complex_f
                 !
               elseif(ix_lz_y/=0.and.jx_lz_y==0) then
                 !
@@ -4627,25 +4627,25 @@ subroutine map_fields_onto_grid(iverbose)
                   !
                   ! for SOX it is always <1.3| which is given, i.e. we need to solve for the 1st, <1.2| component:
                   !
-                  if (field%lambda>0) then 
+                  if (field%lambda>0) then
                     !
                     coupling(2,1) = field%gridvalue(i)*field%complex_f
                     coupling(1,1) =-field%gridvalue(i)*field%complex_f*conjg(a(2,2))/conjg(a(1,2))
                     !
-                  else 
+                  else
                     !
                     coupling(2,1) = field%gridvalue(i)*field%complex_f
                     coupling(1,1) =-field%gridvalue(i)*field%complex_f*conjg(a(2,1))/conjg(a(1,1))
                     !
-                  endif 
-                  ! 
+                  endif
+                  !
                 case ('L+','ABINITIO-LX')
                   !
                   ! eigen-vector 2 is for Lambda
                   !
-                  coupling(1,1) = field%gridvalue(i)*field%complex_f*cmplx(0.0_rk,-1.0_rk,kind=rk)  
+                  coupling(1,1) = field%gridvalue(i)*field%complex_f*cmplx(0.0_rk,-1.0_rk,kind=rk)
                   coupling(2,1) = field%gridvalue(i)*field%complex_f*cmplx(0.0_rk, 1.0_rk,kind=rk)*conjg(a(1,2))/conjg(a(2,2))
-                  ! 
+                  !
                 case ('DIPOLE')
                   !
                   ! eigen-vector 1 is for -Lambda
@@ -4670,13 +4670,13 @@ subroutine map_fields_onto_grid(iverbose)
                 !  !
                 !endif
                 !
-                select case(trim(field%class)) 
+                select case(trim(field%class))
                   !
                 case('SPINORBIT','ABINITIO-SPINORBIT')
                   !
                   if (abs(nint(field%sigmaj-field%sigmai))/=abs(field%lambda-field%lambdaj)) then
                     !
-                    write(out,"('molpro_duo: SO ',2i4,'; illegal selection rules, sigma = ',2f8.1,' lambda = ',2i4)") & 
+                    write(out,"('molpro_duo: SO ',2i4,'; illegal selection rules, sigma = ',2f8.1,' lambda = ',2i4)") &
                           field%iref,field%jref,field%sigmai,field%sigmaj,field%lambda,field%lambdaj
                     stop 'molpro_duo: illegal selection rules '
                     !
@@ -4684,7 +4684,7 @@ subroutine map_fields_onto_grid(iverbose)
                   !
                   !if ( field%sigmaj<0 ) then
                   !  !
-                  !  write(out,"('molpro_duo: SO ',2i4,'; illegal reference sigmaj <0 ',2f8.1)") & 
+                  !  write(out,"('molpro_duo: SO ',2i4,'; illegal reference sigmaj <0 ',2f8.1)") &
                   !        field%iref,field%jref,field%sigmai,field%sigmaj
                   !  stop 'molpro_duo: illegal reference sigmaj'
                   !  !
@@ -4699,25 +4699,25 @@ subroutine map_fields_onto_grid(iverbose)
 
                   ! for SOX it is always <1.3| which is given, i.e. we need to solve for the 1st, <1.2| component:
                   !
-                  if (field%lambdaj>0) then 
+                  if (field%lambdaj>0) then
                     !
                     coupling(1,2) = field%gridvalue(i)*field%complex_f
                     coupling(1,1) =-field%gridvalue(i)*field%complex_f*b(2,1)/b(1,1)
                     !
-                  else 
+                  else
                     !
                     coupling(1,2) = field%gridvalue(i)*field%complex_f
                     coupling(1,1) =-field%gridvalue(i)*field%complex_f*b(2,2)/b(1,2)
                     !
-                  endif 
-                  ! 
+                  endif
+                  !
                 case('L+','ABINITIO-LX')
                   !
                   ! eigen-vector 1 is for Lambda
                   !
-                  coupling(1,1) = field%gridvalue(i)*field%complex_f*cmplx(0.0_rk, 1.0_rk,kind=rk)  
+                  coupling(1,1) = field%gridvalue(i)*field%complex_f*cmplx(0.0_rk, 1.0_rk,kind=rk)
                   coupling(1,2) = field%gridvalue(i)*field%complex_f*cmplx(0.0_rk,-1.0_rk,kind=rk)*b(1,2)/b(2,2)
-                  ! 
+                  !
                 case ('DIPOLE')
                   !
                   ! eigen-vector 1 is for Lambda
@@ -4765,7 +4765,7 @@ subroutine map_fields_onto_grid(iverbose)
                   !
                   if (abs(field%lambda-field%lambdaj)/=1) then
                     !
-                    write(out,"('molpro_duo: DIPOLE ',2i4,'; illegal selection rules for lambda = ',2i4,' not +/-1')") & 
+                    write(out,"('molpro_duo: DIPOLE ',2i4,'; illegal selection rules for lambda = ',2i4,' not +/-1')") &
                           field%iref,field%jref,field%lambda,field%lambdaj
                     stop 'molpro_duo: illegal selection rules for transition dipole'
                     !
@@ -4774,7 +4774,7 @@ subroutine map_fields_onto_grid(iverbose)
                   c = -field%gridvalue(i)*field%complex_f*sqrt(0.5_rk)
                   !
                   ! maple for Lx
-                  !c = -conjugate(A[1,2])*a/conjugate(A[2,2]), b = -a*B[1,2]/B[2,2], 
+                  !c = -conjugate(A[1,2])*a/conjugate(A[2,2]), b = -a*B[1,2]/B[2,2],
                   !d = B[1,2]*conjugate(A[1,2])*a/(B[2,2]*conjugate(A[2,2]))
                   ! m+ = -1/sqrt(2)l+
                   !
@@ -4787,7 +4787,7 @@ subroutine map_fields_onto_grid(iverbose)
                   !
                   if (abs(field%lambda-field%lambdaj)/=1) then
                     !
-                    write(out,"('molpro_duo: L+ ',2i4,'; illegal selection rules for lambda = ',2i4,' not +/-1')") & 
+                    write(out,"('molpro_duo: L+ ',2i4,'; illegal selection rules for lambda = ',2i4,' not +/-1')") &
                           field%iref,field%jref,field%lambda,field%lambdaj
                     stop 'molpro_duo: L+ illegal selection rules for transition dipole'
                     !
@@ -4799,7 +4799,7 @@ subroutine map_fields_onto_grid(iverbose)
                   !
                   ! maple:
                   !
-                  !d = -b*conjugate(A[1,2])/conjugate(A[2,2]), c = B[2,2]*b*conjugate(A[1,2])/(B[1,2]*conjugate(A[2,2])), 
+                  !d = -b*conjugate(A[1,2])/conjugate(A[2,2]), c = B[2,2]*b*conjugate(A[1,2])/(B[1,2]*conjugate(A[2,2])),
                   !a = -B[2,2]*b/B[1,2]
                   !
                   coupling(1,2) =  c
@@ -4822,7 +4822,7 @@ subroutine map_fields_onto_grid(iverbose)
                   !
                   if (nint(field%sigmaj-field%sigmai)/=0) then
                     !
-                    write(out,"('molpro_duo: SOZ ',2i4,'; illegal selection rules, sigma = ',2f8.1,' lambda = ',2i4)") & 
+                    write(out,"('molpro_duo: SOZ ',2i4,'; illegal selection rules, sigma = ',2f8.1,' lambda = ',2i4)") &
                           field%iref,field%jref,field%sigmai,field%sigmaj,field%lambda,field%lambdaj
                     stop 'molpro_duo: SOZ illegal selection rules '
                     !
@@ -4919,7 +4919,7 @@ subroutine map_fields_onto_grid(iverbose)
            jstate = fl(i)%jstate
            !
            if (trim(fl(i)%class)=='SPINORBIT'.and.(abs(fl(i)%sigmai)>fl(i)%spini.or.abs(fl(i)%sigmaj)>fl(i)%spinj)) then
-              write(out,'("For N =",i4," one of sigmas (",2f8.1,") large than  spins (",2f8.1,")")') & 
+              write(out,'("For N =",i4," one of sigmas (",2f8.1,") large than  spins (",2f8.1,")")') &
                         i,fl(i)%sigmai,fl(i)%sigmaj,fl(i)%spini,fl(i)%spinj
               stop 'illegal sigma or spin'
            endif
@@ -5044,7 +5044,7 @@ subroutine map_fields_onto_grid(iverbose)
               endif
               !
            enddo
-           ! 
+           !
            ! write to file if required
            if(job%print_pecs_and_couplings_to_file .eqv. .true.) then
              ! set up filename for output
@@ -5293,7 +5293,7 @@ end subroutine map_fields_onto_grid
     use accuracy
     use timer
     use input
-    use lapack,only : lapack_syev,lapack_heev,lapack_syevr     
+    use lapack,only : lapack_syev,lapack_heev,lapack_syevr
      !
      implicit none
      !
@@ -5391,7 +5391,7 @@ end subroutine map_fields_onto_grid
      ! For this we use the vibrational hamiltonian + the L2(R) part.
      !
      if (iverbose>=3) write(out,'(/"Construct the J=0 matrix")')
-     if (iverbose>=3) write(out,"(a)") 'Solving one-dimentional Schrodinger equations using : ' // trim(solution_method) 
+     if (iverbose>=3) write(out,"(a)") 'Solving one-dimentional Schrodinger equations using : ' // trim(solution_method)
      !
      allocate(vibmat(ngrid,ngrid),vibener(ngrid),contrenergy(ngrid*Nestates),vec(ngrid),contrfunc(ngrid,ngrid*Nestates),stat=alloc)
      call ArrayStart('vibmat',alloc,size(vibmat),kind(vibmat))
@@ -5619,8 +5619,7 @@ end subroutine map_fields_onto_grid
         write(out,'("    i        Energy/cm    State v"/)')
         do i = 1,totalroots
           istate = icontrvib(i)%istate
-          write(out,'(i5,f18.6," [ ",2i4," ] ",a)') i,(contrenergy(i)-contrenergy(1))/sc,istate,icontrvib(i)%v, &
-                                                    trim(poten(istate)%name)
+          write(7,'(i5,f18.6)') i,(contrenergy(i))/sc
         enddo
      endif
 
@@ -5674,7 +5673,7 @@ end subroutine map_fields_onto_grid
                                                                        icontrvib(ilevel)%v,            &
                                                                        icontrvib(jlevel)%istate,       &
                                                                        icontrvib(jlevel)%v,            &
-                                                                       psipsi_t 
+                                                                       psipsi_t
            endif
            !
            if (iverbose>=6) then
@@ -5727,7 +5726,7 @@ end subroutine map_fields_onto_grid
         !
         if (iobject==Nobjects-2) cycle
         !
-        if (iobject==Nobjects.and.iverbose>=3.and.action%intensity) then 
+        if (iobject==Nobjects.and.iverbose>=3.and.action%intensity) then
            !
            write(out,'(/"Vibrational transition moments: ")')
 !            write(out,'("    State    TM   State"/)')
@@ -5774,19 +5773,19 @@ end subroutine map_fields_onto_grid
           case (Nobjects-1)
             field => brot(iterm)
             field%name = 'BROT'
-            if (.not.fields_allocated) then 
+            if (.not.fields_allocated) then
               allocate(field%gridvalue(ngrid),stat=alloc)
               call ArrayStart(field%name,alloc,size(field%gridvalue),kind(field%gridvalue))
-            endif 
+            endif
             field%gridvalue(:) = b_rot/r(:)**2*sc
           case (Nobjects)
-            if (.not.action%intensity) cycle 
+            if (.not.action%intensity) cycle
             field => dipoletm(iterm)
           end select
           !
-          ! check if the field wass not allocated at previous call to prevent multiple allocatetions 
+          ! check if the field wass not allocated at previous call to prevent multiple allocatetions
           !
-          if (.not.fields_allocated) then 
+          if (.not.fields_allocated) then
             allocate(field%matelem(totalroots,totalroots),stat=alloc)
             call ArrayStart(field%name,alloc,size(field%matelem),kind(field%matelem))
           endif
@@ -5808,13 +5807,13 @@ end subroutine map_fields_onto_grid
               !
               ! If intensity%threshold%dipole is given and TM is smaller than this threshold set the TM-value to zero
               !
-              if (abs(field%matelem(ilevel,jlevel))<intensity%threshold%dipole) field%matelem(ilevel,jlevel) = 0 
+              if (abs(field%matelem(ilevel,jlevel))<intensity%threshold%dipole) field%matelem(ilevel,jlevel) = 0
               !
               field%matelem(jlevel,ilevel) = field%matelem(ilevel,jlevel)
               !
               !matelem_ark(ilevel,jlevel)  = sum(contrfunc_ark(:,ilevel)*real(field%gridvalue(:),ark)*contrfunc_ark(:,jlevel))
               !
-              !matelem_ark(ilevel,jlevel)  = sum(contrfunc_ark(:,ilevel)*( (grid_ark(:)-2.24_ark )*0.6_ark )* & 
+              !matelem_ark(ilevel,jlevel)  = sum(contrfunc_ark(:,ilevel)*( (grid_ark(:)-2.24_ark )*0.6_ark )* &
               !                                                                        contrfunc_ark(:,jlevel))
               !
               !psipsi_ark = contrfunc_ark(:,ilevel)*real(field%gridvalue(:),ark)*contrfunc_ark(:,jlevel)
@@ -5832,7 +5831,7 @@ end subroutine map_fields_onto_grid
           enddo
           !$omp end parallel do
           !
-          ! printing out transition moments 
+          ! printing out transition moments
           !
           if (iobject==Nobjects.and.action%intensity) then
               !
@@ -5847,20 +5846,20 @@ end subroutine map_fields_onto_grid
                   !
                   ! dipole selection rules
                   !
-                  if (nint(field%spini-field%spinj)==0.and.abs(field%lambda-field%lambdaj)<=1) then 
+                  if (nint(field%spini-field%spinj)==0.and.abs(field%lambda-field%lambdaj)<=1) then
                      !
                      !field%matelem(ilevel,jlevel) = field%matelem(ilevel,jlevel)*field%factor
                      !
 !                      if ( iverbose>=4.and.abs(field%matelem(ilevel,jlevel))>sqrt(small_).and.istate==field%istate.and.&
                      if ( iverbose>=4 .and. istate==field%istate.and.&   ! remove the check on magnitude --- print all
-                          jstate==field%jstate ) then 
+                          jstate==field%jstate ) then
                        !                        NB:   hard limit 40 characters to field name, may lead to truncation!!!
                        write(out,'("<",i2,",",i4,"|",a40,5x,"|",i2,",",i4,"> = ",2es18.8)') icontrvib(ilevel)%istate,    &
                                                                                           icontrvib(ilevel)%v,            &
                                                                                           trim(field%name),               &
                                                                                           icontrvib(jlevel)%istate,       &
                                                                                           icontrvib(jlevel)%v,            &
-                                                                                          field%matelem(ilevel,jlevel)  ! & 
+                                                                                          field%matelem(ilevel,jlevel)  ! &
                                                                                           !,matelem_ark(ilevel,jlevel)
                        !
                      endif
@@ -5869,14 +5868,14 @@ end subroutine map_fields_onto_grid
                     !
                     field%matelem(ilevel,jlevel) = 0
                     !
-                  endif 
+                  endif
                   !
                   ! in the grid representation of the vibrational basis set
                   ! the matrix elements are evaluated simply by a sumation of over the grid points
                   !
                 enddo
               enddo
-          endif 
+          endif
           !
         enddo
         !
@@ -5895,16 +5894,16 @@ end subroutine map_fields_onto_grid
      !deallocate(grid_ark)
      !call ArrayStop('grid_ark')
      !
-     ! checkpoint the matrix elements of dipoles if required 
+     ! checkpoint the matrix elements of dipoles if required
      !
-     !if (trim(job%IO_dipole=='SAVE')) then 
-     !!    call check_point_dipoles('SAVE',iverbose,totalroots) 
+     !if (trim(job%IO_dipole=='SAVE')) then
+     !!    call check_point_dipoles('SAVE',iverbose,totalroots)
      !endif
      !
      ! First we start a loop over J - the total angular momentum quantum number
      !
      if (action%intensity) then
-       ! 
+       !
        allocate(eigen(nJ,sym%NrepresCs),basis(nJ),stat=alloc)
        if (alloc/=0) stop 'problem allocating eigen'
        !
@@ -5918,7 +5917,7 @@ end subroutine map_fields_onto_grid
        !
      endif
      !
-     if (job%IO_eigen=='SAVE') then 
+     if (job%IO_eigen=='SAVE') then
         !
         filename =  trim(job%eigenfile%vectors)//'_vectors.chk'
         write(ioname, '(a, i4)') 'Eigenvectors file '
@@ -6060,7 +6059,7 @@ end subroutine map_fields_onto_grid
        !
        if (iverbose>=3) write(out,'(/"Construct the hamiltonian matrix")')
        !
-       !omp parallel do private(i,ivib,ilevel,istate,sigmai,imulti,ilambda,omegai,spini,jvib,jlevel,jstate,sigmaj,  & 
+       !omp parallel do private(i,ivib,ilevel,istate,sigmai,imulti,ilambda,omegai,spini,jvib,jlevel,jstate,sigmaj,  &
        !                        jmulti,jlambda,omegaj,spinj,f_rot,erot,iL2,field,f_l2,f_s,f_t,iso,ibraket,ipermute, &
        !                        istate_,ilambda_,sigmai_,spini_,jstate_,jlambda_,sigmaj_,spinj_,isigmav,omegai_,    &
        !                        omegaj_,itau,ilxly,f_grid,f_l,f_ss) shared(hmat) schedule(guided)
@@ -6112,7 +6111,7 @@ end subroutine map_fields_onto_grid
             !
             if (ilevel==jlevel) then
               !                                             ! L Lodi -job%diag_L2_fact is either zero or one
-              erot = f_rot*( Jval*(Jval+1.0_rk) - omegai**2 -job%diag_L2_fact*real(ilambda**2,rk)  & 
+              erot = f_rot*( Jval*(Jval+1.0_rk) - omegai**2 -job%diag_L2_fact*real(ilambda**2,rk)  &
                        +   spini*(spini+1.0_rk) - sigmai**2 )
               !
               ! add the diagonal matrix element to the local spin-rotational matrix hmat
@@ -6202,7 +6201,7 @@ end subroutine map_fields_onto_grid
                  endif
                  !
               endif
-              ! 
+              !
             enddo
             !
             ! Non-diagonal spin-rotaion term
@@ -6211,7 +6210,7 @@ end subroutine map_fields_onto_grid
               !
               field => spinrot(isr)
               !
-              ! Two options are possible: 
+              ! Two options are possible:
               ! 1. <Sigma,Omega,Lambda|HSR|Sigma+/-1,Omega+/-1,Lambda>
               ! 2. <Sigma,Omega,Lambda|HSR|Sigma+/-1,Omega,Lambda-/+>
               !
@@ -6249,12 +6248,12 @@ end subroutine map_fields_onto_grid
                     !
                     if (ipermute==0) then
                       !
-                      istate_ = field%istate ; ilambda_ = field%lambda  
-                      jstate_ = field%jstate ; jlambda_ = field%lambdaj 
+                      istate_ = field%istate ; ilambda_ = field%lambda
+                      jstate_ = field%jstate ; jlambda_ = field%lambdaj
                       !
                     else  ! permute
                       !
-                      jstate_ = field%istate ; jlambda_ = field%lambda 
+                      jstate_ = field%istate ; jlambda_ = field%lambda
                       istate_ = field%jstate ; ilambda_ = field%lambdaj
                       !
                     endif
@@ -6269,14 +6268,14 @@ end subroutine map_fields_onto_grid
                     !
                     ! We should also take into account that Lambda can change sign (only Lambda>0 is given in input)
                     ! In order to recover other combinations we apply the symmetry transformation
-                    ! laboratory fixed inversion which is equivalent to the sigmav operation 
+                    ! laboratory fixed inversion which is equivalent to the sigmav operation
                     !                    (sigmav= 0 correspond to the unitary transformation)
                     do isigmav = 0,1
                       !
                       ! the permutation is only needed if at least some of the quanta is not zero. otherwise it should be skipped to
                       ! avoid the double counting.
                       if( isigmav==1.and. abs( field%lambda ) + abs( field%lambdaj )==0 ) cycle
-               
+
                       ! do the sigmav transformations (it simply changes the sign of lambda and sigma simultaneously)
                       ilambda_ = ilambda_*(-1)**isigmav
                       jlambda_ = jlambda_*(-1)**isigmav
@@ -6287,7 +6286,7 @@ end subroutine map_fields_onto_grid
                       !
                       ! double check
                       if (spini/=poten(istate)%spini.or.spinj/=poten(jstate)%spini) then
-                       write(out,'("SR: reconstructed spini ",f8.1," or spinj ",f8.1," do not agree with stored values ", & 
+                       write(out,'("SR: reconstructed spini ",f8.1," or spinj ",f8.1," do not agree with stored values ", &
                                   & f8.1,1x,f8.1)') spini,spinj,poten(istate)%spini,poten(jstate)%spini
                         stop 'SR: wrongly reconsrtucted spini or spinj'
                       endif
@@ -6296,7 +6295,7 @@ end subroutine map_fields_onto_grid
                       !
                       ! <Lx> and <Ly> don't depend on Sigma
                       !
-                      ! L*S part of the spin-rotation 
+                      ! L*S part of the spin-rotation
                       !
                       ! the selection rules are Delta Sigma = - Delta Lambda (Delta Spin = 0)
                       !
@@ -6321,7 +6320,7 @@ end subroutine map_fields_onto_grid
                           ! since we only need to know how <Lamba|L+/-|Lambda'> transforms in order to relate it to the
                           ! value given in input.
                           !
-                          itau = 0 
+                          itau = 0
                           !
                           if (ilambda_==0.and.poten(istate)%parity%pm==-1) itau = itau+1
                           if (jlambda_==0.and.poten(jstate)%parity%pm==-1) itau = itau+1
@@ -6353,7 +6352,7 @@ end subroutine map_fields_onto_grid
                   enddo
                   !
               endif
-              ! 
+              !
             enddo
             !
             ! J*S part (S-uncoupling)
@@ -6402,7 +6401,7 @@ end subroutine map_fields_onto_grid
               !
               field => spinorbit(iso)
               !
-              ! The selection rules are (Lefebvre-Brion and Field, Eq. (3.4.6)): 
+              ! The selection rules are (Lefebvre-Brion and Field, Eq. (3.4.6)):
               ! Delta J = 0 ; Delta Omega  = 0 ; g<-/->u; e<->f; Sigma+<->Sigma-;
               ! Delta S = 0 or Delta S = 1 ; Delta Lambda = Delta Sigma = 0 or Delta Lambda = - Delta Sigma = +/- 1
               !
@@ -6423,22 +6422,22 @@ end subroutine map_fields_onto_grid
                   istate_ = field%jstate ; ilambda_we = field%lambdaj ; sigmai_we = field%sigmaj ; spini_ = field%spinj
                   !
                 endif
-                ! proceed only if the spins of the field equal the corresponding <i| and |j> spins of the current matrix elements. 
+                ! proceed only if the spins of the field equal the corresponding <i| and |j> spins of the current matrix elements.
                 ! otherwise skip it:
                 if ( nint(spini_-spini)/=0.or.nint(spinj_-spinj)/=0 ) cycle
                 !
                 ! however the permutation makes sense only when for non diagonal <State,Lambda,Spin|F|State',Lambda',Spin'>
                 ! otherwise it will cause a double counting:
                 !
-                if (ipermute==1.and.istate_==jstate_.and.ilambda_we==jlambda_we.and.nint(sigmai_we-sigmaj_we)==0.and. & 
+                if (ipermute==1.and.istate_==jstate_.and.ilambda_we==jlambda_we.and.nint(sigmai_we-sigmaj_we)==0.and. &
                     nint(spini_-spinj_)==0) cycle
                 !
                 ! check if we at the right electronic states
                 if( istate/=istate_.or.jstate/=jstate_ ) cycle
                 !
-                ! We apply the Wigner-Eckart theorem to reconstruct all combinations of <Lamba Sigma |HSO|Lamba Sigma' > 
-                ! connected with the reference (input) <Lamba Sigma_r |HSO|Lamba Sigma_r' > by this theorem. 
-                ! Basically, we loop over Sigma (Sigma = -S..S).  The following 3j-symbol for the reference states will 
+                ! We apply the Wigner-Eckart theorem to reconstruct all combinations of <Lamba Sigma |HSO|Lamba Sigma' >
+                ! connected with the reference (input) <Lamba Sigma_r |HSO|Lamba Sigma_r' > by this theorem.
+                ! Basically, we loop over Sigma (Sigma = -S..S).  The following 3j-symbol for the reference states will
                 ! be conidered:
                 ! / Si      k  Sj     \    k  = 1
                 ! \ -Sigmai q  Sigmaj /    q  = Sigmai - Sigmaj
@@ -6454,14 +6453,14 @@ end subroutine map_fields_onto_grid
                 ! the corresponding three_j should be non-zero:
                 three_j_ref = three_j(spini_, 1.0_rk, spinj_, -sigmai_we, q_we, sigmaj_we)
                 !
-                if (abs(three_j_ref)<small_) then 
+                if (abs(three_j_ref)<small_) then
                   !
-                  write(out,"('The Spin-orbit field ',2i3,' is incorrect according to Wigner-Eckart, three_j = 0 ')") & 
+                  write(out,"('The Spin-orbit field ',2i3,' is incorrect according to Wigner-Eckart, three_j = 0 ')") &
                         field%istate,field%jstate
                   write(out,"('Check S_i, S_j, Sigma_i, Sigma_j =  ',4f9.2)") spini_,spinj_,sigmai_we,sigmaj_we
                   stop "The S_i, S_j, Sigma_i, Sigma_j are inconsistent"
                   !
-                end if 
+                end if
                 !
                 ! Also check the that the SO is consistent with the selection rules for SO
                 !
@@ -6484,7 +6483,7 @@ end subroutine map_fields_onto_grid
                 do isigma2 = -nint(2.0*spini_),nint(2.0*spini_),2
                   !
                   ! Sigmas from Wigner-Eckart
-                  sigmai_ = real(isigma2,rk)*0.5 
+                  sigmai_ = real(isigma2,rk)*0.5
                   sigmaj_ = sigmai_ - q_we
                   !
                   ! three_j for current Sigmas
@@ -6499,7 +6498,7 @@ end subroutine map_fields_onto_grid
                   ! combinations.
                   !
                   ! In order to recover other combinations we apply the symmetry transformation
-                  ! laboratory fixed inversion which is equivalent to the sigmav operation 
+                  ! laboratory fixed inversion which is equivalent to the sigmav operation
                   !                    (sigmav= 0 correspond to the unitary transformation)
                   do isigmav = 0,1
                     !
@@ -6625,7 +6624,7 @@ end subroutine map_fields_onto_grid
                 !
                 ! We should also take into account that Lambda can change sign (only Lambda>0 is given in input)
                 ! In order to recover other combinations we apply the symmetry transformation
-                ! laboratory fixed inversion which is equivalent to the sigmav operation 
+                ! laboratory fixed inversion which is equivalent to the sigmav operation
                 !                    (sigmav= 0 correspond to the unitary transformation)
                 do isigmav = 0,1
                   !
@@ -6645,7 +6644,7 @@ end subroutine map_fields_onto_grid
                   !
                   ! double check
                   if (spini/=poten(istate)%spini.or.spinj/=poten(jstate)%spini) then
-                   write(out,'("LJ: reconstructed spini ",f8.1," or spinj ",f8.1," do not agree with stored values ", & 
+                   write(out,'("LJ: reconstructed spini ",f8.1," or spinj ",f8.1," do not agree with stored values ", &
                               & f8.1,1x,f8.1)') spini,spinj,poten(istate)%spini,poten(jstate)%spini
                     stop 'LJ: wrongly reconsrtucted spini or spinj'
                   endif
@@ -6819,7 +6818,7 @@ end subroutine map_fields_onto_grid
                  endif
                  !
               endif
-              ! 
+              !
             enddo
             !
             ! Non-diagonal lambda-p doubling
@@ -6837,7 +6836,7 @@ end subroutine map_fields_onto_grid
                  f_s = sigmai-sigmaj
                  !
                  f_t = sqrt( spini*(spini+1.0_rk)-sigmaj*(sigmaj+f_s) )*&
-                       sqrt( jval* (jval +1.0_rk)-omegaj*(omegaj-f_s) )  
+                       sqrt( jval* (jval +1.0_rk)-omegaj*(omegaj-f_s) )
                  !
                  f_lo = field%matelem(ivib,jvib)*f_t*sc
                  !
@@ -6854,7 +6853,7 @@ end subroutine map_fields_onto_grid
                  endif
                  !
               endif
-              ! 
+              !
             enddo
             !
             ! Non-diagonal lambda-q doubling
@@ -6889,7 +6888,7 @@ end subroutine map_fields_onto_grid
                  endif
                  !
               endif
-              ! 
+              !
             enddo
             !
          enddo  ! j
@@ -6936,7 +6935,7 @@ end subroutine map_fields_onto_grid
        ilevel2isym = 0
        Nirr = 0
        !
-       !omp parallel do private(istate,sigmai,ilambda,spini,omegai,ibib,j,jstate,sigmaj,jlambda,omegaj,spinj,jvib) & 
+       !omp parallel do private(istate,sigmai,ilambda,spini,omegai,ibib,j,jstate,sigmaj,jlambda,omegaj,spinj,jvib) &
        !                        shared(iswap,vec) schedule(guided)
        do i = 1,Ntotal
          !
@@ -7027,8 +7026,8 @@ end subroutine map_fields_onto_grid
        enddo
        !omp end parallel do
        !
-       ! Nlevels is the number of states disregarding the degeneracy 
-       ! Nroots is the total number of roots including the degenerate states 
+       ! Nlevels is the number of states disregarding the degeneracy
+       ! Nroots is the total number of roots including the degenerate states
        !
        allocate(transform(1)%matrix(max(1,Nsym(1)),max(1,Nsym(1))),stat=alloc)
        allocate(transform(2)%matrix(max(1,Nsym(2)),max(1,Nsym(2))),stat=alloc)
@@ -7043,7 +7042,7 @@ end subroutine map_fields_onto_grid
        allocate(Utransform(Nlevels,2,2),stat=alloc)
        call ArrayStart('Utransform',alloc,size(Utransform),kind(Utransform))
        !
-       ! Building the transformation to the symmetrized representaion 
+       ! Building the transformation to the symmetrized representaion
        !
        do ilevel = 1,Nlevels
          !
@@ -7233,7 +7232,7 @@ end subroutine map_fields_onto_grid
          !
        enddo
        !
-       ! Now we diagonalize the two matrices contructed one by one 
+       ! Now we diagonalize the two matrices contructed one by one
        !
        if (iverbose>=2) write(out,'(/"Eigenvalues for J = ",f8.1)') jval
        !
@@ -7340,7 +7339,7 @@ end subroutine map_fields_onto_grid
             !
             maxcontr = hsym(imaxcontr,i)**2
             !
-            i0 = 0 
+            i0 = 0
             !
             loop_check : do
               !
@@ -7356,16 +7355,16 @@ end subroutine map_fields_onto_grid
                  !
                  !print*,i,ilevel,imaxcontr
                  !
-                 i0 = i0 + 1 
+                 i0 = i0 + 1
                  !
-                 if (i0>10) then 
+                 if (i0>10) then
                    !
                    imaxcontr = maxloc(hsym(:,i)**2,dim=1,mask=hsym(:,i)**2.ge.small_)
                    exit loop_check
                    !
-                 endif 
+                 endif
                  !
-                 cycle loop_check 
+                 cycle loop_check
                  !
                endif
                !
@@ -7388,13 +7387,13 @@ end subroutine map_fields_onto_grid
             spini = icontr(mterm)%spin
             v = icontr(mterm)%v
             !
-            if (iverbose>=3) write(out,'(2x,f8.1,i5,f18.6,1x,i3,2x,2i4,3f8.1,3x,a1,4x,"||",a)') & 
+            if (iverbose>=3) write(out,'(2x,f8.1,i5,f18.6,1x,i3,2x,2i4,3f8.1,3x,a1,4x,"||",a)') &
                              jval,i,eigenval(i)-job%ZPE,istate,v,ilambda,spini,sigma,omega,plusminus(irrep), &
                                                   trim(poten(istate)%name)
 
             if (job%print_rovibronic_energies_to_file ) then
                !  open(unit=u2, file='rovibronic_energies.dat',status='replace',action='write')
-                 write(u2,'(2x,f8.1,i5,f18.6,1x,i3,2x,2i4,3f8.1,3x,a1,4x,"||",a)') & 
+                 write(u2,'(2x,f8.1,i5,f18.6,1x,i3,2x,2i4,3f8.1,3x,a1,4x,"||",a)') &
                      jval,i,eigenval(i)-job%ZPE,istate,v,ilambda,spini,sigma,omega,plusminus(irrep), &
                                                   trim(poten(istate)%name)
                !  close(u2)
@@ -7453,9 +7452,9 @@ end subroutine map_fields_onto_grid
             !
             total_roots = max(total_roots,1)
             !
-            if (action%intensity) then 
+            if (action%intensity) then
                !
-               allocate(eigen(irot,irrep)%vect(Ntotal,total_roots),eigen(irot,irrep)%val(total_roots), & 
+               allocate(eigen(irot,irrep)%vect(Ntotal,total_roots),eigen(irot,irrep)%val(total_roots), &
                                   eigen(irot,irrep)%quanta(total_roots),stat=alloc)
                call ArrayStart('eigens',alloc,size(eigen(irot,irrep)%vect),kind(eigen(irot,irrep)%vect))
                call ArrayStart('eigens',alloc,size(eigen(irot,irrep)%val),kind(eigen(irot,irrep)%val))
@@ -7486,7 +7485,7 @@ end subroutine map_fields_onto_grid
               !
               !call Energy_filter(Jval,eigenval(i),irrep,passed)
               !
-              if (job%isym_do(irrep)) then  
+              if (job%isym_do(irrep)) then
                 !
                 vec = 0
                 !
@@ -7526,7 +7525,7 @@ end subroutine map_fields_onto_grid
                 spini = icontr(mterm)%spin
                 v = icontr(mterm)%v
                 !
-                if (action%intensity) then 
+                if (action%intensity) then
                    !
                    eigen(irot,irrep)%vect(:,total_roots) = vec(:)
                    eigen(irot,irrep)%val(total_roots) = eigenval(i)
@@ -7543,10 +7542,10 @@ end subroutine map_fields_onto_grid
                    !
                 endif
                 !
-                if (job%IO_eigen=='SAVE') then 
+                if (job%IO_eigen=='SAVE') then
                   !
                   do k = 1,Ntotal
-                    write(iunit,'(2x,i8,1x,f8.1,1x,i2,1x,e20.12,1x,i3,1x,i3,1x,i3,1x,f8.1,1x,f8.1)')  total_roots,     & 
+                    write(iunit,'(2x,i8,1x,f8.1,1x,i2,1x,e20.12,1x,i3,1x,i3,1x,i3,1x,f8.1,1x,f8.1)')  total_roots,     &
                           J_list(irot),irrep-1,vec(k),icontr(k)%istate,icontr(k)%ivib,icontr(k)%ilambda,icontr(k)%sigma, &
                           icontr(k)%spin
                   enddo
@@ -7603,12 +7602,12 @@ end subroutine map_fields_onto_grid
        !
      enddo loop_jval
      !
-     if (job%IO_eigen=='SAVE') then 
+     if (job%IO_eigen=='SAVE') then
        !
        write(iunit,"('End of eigenvector')")
        !
        close(unit = iunit, status='keep')
-       !  
+       !
      endif
      !
      deallocate(contrfunc)
@@ -7650,19 +7649,19 @@ end subroutine map_fields_onto_grid
           cross_prod = -cross_prod
           !
           mat(:,jelem) = mat(:,jelem)+mat(:,ielem)*cross_prod
-          ! 
-        enddo 
+          !
+        enddo
         !$omp end parallel do
         !
-      enddo 
+      enddo
       !
   end subroutine schmidt_orthogonalization
 
 
 !
-! integration with Simpson rules 
-!                                      
-  function simpsonintegral_ark(npoints,f) result (si) 
+! integration with Simpson rules
+!
+  function simpsonintegral_ark(npoints,f) result (si)
     integer(ik),intent(in) :: npoints
     !
     real(ark),intent(in) :: f(0:npoints)
@@ -7673,15 +7672,15 @@ end subroutine map_fields_onto_grid
     !
     real(ark) ::  feven,fodd,f0,fmax,h
       !
-      h = 1.0_ark 
+      h = 1.0_ark
       !xmax/real(Npoints,kind=ark)  !   integration step, it is already inlcuded
-      feven=0         
+      feven=0
       fodd =0
       f0   =f(0)
       fmax =f(Npoints)
 
      !
-     !  sum of odd and even contributions 
+     !  sum of odd and even contributions
      !
      do i = 1,npoints-2,2
         fodd   = fodd  + f(i  )
@@ -7697,7 +7696,7 @@ end subroutine map_fields_onto_grid
 
 
  !
- 
+
   function three_j(a,b,c,al,be,ga)
 
       real(rk) :: three_j
@@ -7725,7 +7724,7 @@ end subroutine map_fields_onto_grid
 !     delta=sqrt(fakt(a+b-c)*fakt(a+c-b)*fakt(b+c-a)/fakt(a+b+c+1.0_rk))
       delta_log = faclog(a+b-c)+faclog(a+c-b)+faclog(b+c-a)-faclog(a+b+c+1.0_rk)
       !
-      delta=sqrt(exp(delta_log)) 
+      delta=sqrt(exp(delta_log))
 !
 !
       !term1=fakt(a+al)*fakt(a-al)
@@ -7740,7 +7739,7 @@ end subroutine map_fields_onto_grid
       term3=faclog(c+ga)+faclog(c-ga)
       !
       termlog = ( term1+term2+term3+delta_log )*0.5_rk
- 
+
       term=sqrt( (2.0_rk*c+1.0_rk) )
 !
 !
@@ -7789,24 +7788,21 @@ end subroutine map_fields_onto_grid
    end function three_j
   !
   !
-  ! calculate factorial by log function 
-  ! 
+  ! calculate factorial by log function
+  !
   function faclog(a)   result (v)
     real(rk),intent(in) ::  a
-    real(rk)            :: v 
+    real(rk)            :: v
     integer(ik) j,k
 
     v=0
     k=nint(a)
-    if(k>=2) then 
+    if(k>=2) then
       do j=2,k
          v=v+log(real(j,rk))
-      enddo 
-    endif 
-    
+      enddo
+    endif
+
   end function faclog
   !
 end module diatom_module
-
-
-
